@@ -1,1 +1,4 @@
-# powershell_tools
+# Powershell Tools
+
+This repo contain some "usefull" scripts for Windows :-)
+
