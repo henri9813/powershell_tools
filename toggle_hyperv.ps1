@@ -11,9 +11,11 @@ $hyperv = Get-WindowsOptionalFeature -FeatureName Microsoft-Hyper-V-All -Online
 
 Write-Host "Current  $($hyperv.FeatureName) state: $($hyperv.State)"
 
-if(confirmation("Do you want to enable $($hyperv.FeatureName)"))
+$action = If ($($hyperv.State)) {"disable"} Else {"enable"}
+
+if(confirmation("Do you want to $($action) $($hyperv.FeatureName)"))
 {
-    if($hyperv.State -eq "Enabled") {
+    if($($hyperv.State)) {
         Disable-WindowsOptionalFeature -Online -FeatureName Microsoft-Hyper-V-All
     }
     else {
