@@ -15,12 +15,19 @@ $action = If ($($hyperv.State)) {"disable"} Else {"enable"}
 
 if(confirmation("Do you want to $($action) $($hyperv.FeatureName)"))
 {
-
-    if($($hyperv.State)) {
-        Disable-WindowsOptionalFeature -Online -FeatureName Microsoft-Hyper-V-All
+    try
+    {
+        if($($hyperv.State)) {
+            Disable-WindowsOptionalFeature -Online -FeatureName Microsoft-Hyper-V-All
+        }
+        else {
+            Enable-WindowsOptionalFeature -Online -FeatureName Microsoft-Hyper-V -All
+        }
     }
-    else {
-        Enable-WindowsOptionalFeature -Online -FeatureName Microsoft-Hyper-V -All
+    catch
+    {
+        Write-Color -Text "Error" -ForegroundColor Red
+        echo $_.Exception.Message
+        break
     }
 }
-Pause
