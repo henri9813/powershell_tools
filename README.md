@@ -15,10 +15,10 @@ rotate_directory.ps1 folder1
 
 | OS | Tested |
 | :---: |:---:|
-| Windows Server 2012 | [ ] |
-| Windows Server 2016 | [ ]
-| Windows 10 v.1803 | [x] |
-| Windows 10 v.1809 | [x] |
+| Windows Server 2012 | :interrobang: |
+| Windows Server 2016 | :interrobang: |
+| Windows 10 v.1803 | :white_check_mark: |
+| Windows 10 v.1809 | :white_check_mark: |
 
 ## Toggle Hyper-V
 
