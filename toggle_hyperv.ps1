@@ -15,6 +15,7 @@ $action = If ($($hyperv.State)) {"disable"} Else {"enable"}
 
 if(confirmation("Do you want to $($action) $($hyperv.FeatureName)"))
 {
+
     if($($hyperv.State)) {
         Disable-WindowsOptionalFeature -Online -FeatureName Microsoft-Hyper-V-All
     }

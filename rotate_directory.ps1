@@ -7,23 +7,24 @@ param (
     [Parameter(Mandatory=$true)][ValidateScript({Test-Path $_})][string]$path
 )
 
-$date = $(get-date -f yyyy-MM-dd-hh-mm-ss)
+. "$PSScriptRoot\libraries\random.ps1"
 
 Write-Color -Text "Creating new directory : " -NoNewLine
-Try
+try
 {
-    $Folder = New-Item "$($path)\$($date)" -ItemType Directory -Force
+    $Folder = New-Item "$($path)\$(RandomString(50))" -ItemType Directory -Force
+    $Folder.Attributes = "Hidden"
     Write-Color -Text "Ok" -ForegroundColor Green
 }
-Catch
+catch
 {
     Write-Color -Text "Error" -ForegroundColor Red
     echo $_.Exception.Message
-    Break
+    break
 }
 
 Write-Color -Text "Moving files : " -NoNewLine
-Try
+try
 {
     Get-ChildItem "$($path)" |
     Foreach-Object {
@@ -34,44 +35,45 @@ Try
             return
         }
         else {
-            $_.MoveTo("$($Folder.FullName)\$($_.BaseName).$($_.Extension)")
+            $_.MoveTo("$($Folder.FullName)\$($_.BaseName)$($_.Extension)")
         }
     }
     Write-Color -Text "Ok" -ForegroundColor Green
 }
-Catch
+catch
 {
     Write-Color -Text "Error" -ForegroundColor Red
     echo $_.Exception.Message
     echo $_.Exception.ItemName
-    Break
+    break
 }
 
 Write-Color -Text "Compressig directory : " -NoNewLine
-Try
+try
 {
+    $date = Get-Date -format yyyy-MM-dd
     #https://github.com/PowerShell/Microsoft.PowerShell.Archive/issues/19
     #Compress-Archive -DestinationPath "$($Folder.FullName).zip" -CompressionLevel "Optimal" -LiteralPath "$($Folder.FullName)"
     #Install-Module -Name 7Zip4Powershell
-    Compress-7Zip -Path "$($Folder.FullName)" -ArchiveFileName "$($Folder.FullName).zip" -Format "Zip" -CompressionLevel "Ultra"
+    Compress-7Zip -Path "$( $Folder.FullName )" -ArchiveFileName "$( $path )\$( $date ).zip" -Format "Zip" -CompressionLevel "Ultra"
     Write-Color -Text "Ok" -ForegroundColor Green
 }
-Catch
+catch
 {
     Write-Color -Text "Error" -ForegroundColor Red
     echo $_.Exception.Message
-    Break
+    break
 }
 
 Write-Color -Text "Remove directory : " -NoNewLine
-Try
+try
 {
-    $Folder.Remove()
+    Remove-Item $Folder.FullName -Recurse -Force
     Write-Color -Text "Ok" -ForegroundColor Green
 }
-Catch
+catch
 {
     Write-Color -Text "Error" -ForegroundColor Red
     echo $_.Exception.Message
-    Break
+    break
 }
